@@ -2,9 +2,28 @@
     <#list apiRequests as apiRequest>
         {
         "name": "${apiRequest.name}",
+        "event": [
+            {
+                "listen": "test",
+                "script": {
+                "exec": [
+                        !pm.test("令牌验证通过", function () {
+                        var jsondata = JSON.parse(responseBody); //把响应正文转化为json对象
+                        var status = jsondata.status; //json对象名.键名
+                        pm.expect(status).to.oneOf([200,500]);
+                    });"
+                ],
+                "type": "text/javascript"
+                }
+            }
+        ],
         "request": {
                         "method": "${apiRequest.request.method}",
-                        "header": [],
+                        "header": [{
+                                        "key": "token",
+                                        "value": "手动填充就好",
+                                        "type": "text"
+                        }],
                         "url": {
                                     "raw": "${apiRequest.request.url.raw}",
                                     "protocol": "${apiRequest.request.url.protocol}",
